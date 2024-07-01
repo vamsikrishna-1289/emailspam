@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Spam Classifier</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Email Spam Classifier</h1>
+            <p>Enter your email message below to check if it's spam or not.</p>
+        </header>
+        <main>
+            <form id="spamForm" action="/predict" method="post">
+                <textarea id="message" name="message" rows="4" placeholder="Enter your email message..."></textarea>
+                <button type="submit" class="btn">Predict</button>
+            </form>
+            <div id="result" class="result"></div>
+        </main>
+        <footer>
+            <p>&copy; 2024 Email Spam Classifier. All rights reserved.</p>
+        </footer>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#spamForm').submit(function(event) {
+                event.preventDefault();
+                var formData = $(this).serialize();
+                $.ajax({
+                    type: "POST",
+                    url: '/predict',
+                    data: formData,
+                    success: function(response) {
+                        var result = response.prediction === 1 ? 'Spam' : 'Ham';
+                        $('#result').html('<h2>Prediction: ' + result + '</h2>');
+                    },
+                    error: function(error) {
+                        console.log(error);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
